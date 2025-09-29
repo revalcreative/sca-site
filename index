@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SCA, INC - Third Party Administrator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Montserrat',sans-serif; line-height:1.6; color:#333; }
+    .page { display:none; } .page.active { display:block; }
+
+    .top-bar{background:#b8c4c0; padding:10px 50px; display:flex; justify-content:flex-end; align-items:center; gap:20px; font-size:14px;}
+    .top-bar label,.top-bar input,.top-bar a{display:block;}
+    .top-bar input{padding:5px 10px; border:1px solid #999; background:#d4dbd9;}
+    .top-bar a{color:#2c5f7f; text-decoration:underline; font-size:13px; cursor:pointer;}
+    .top-bar button{background:#2c5f7f; color:#fff; border:none; padding:5px 15px; cursor:pointer; font-weight:bold;}
+
+    @media (max-width:768px){
+      .top-bar{padding:10px 20px; justify-content:center;}
+      .top-bar label,.top-bar input,.top-bar a{display:none;}
+      .top-bar button{display:block; padding:8px 30px; font-size:14px;}
+    }
+
+    header{background:#fff; padding:20px 50px; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #2c5f7f;}
+    .logo-section{display:flex; align-items:center; gap:15px; cursor:pointer;}
+    .logo{width:60px; height:60px; border-radius:50%; overflow:hidden;}
+    .logo img{width:100%; height:100%; object-fit:cover;}
+    .company-name{font-size:24px; font-weight:bold; color:#2c5f7f;}
+
+    nav{display:flex; gap:40px; align-items:center;}
+    nav>a{color:#2c5f7f; text-decoration:none; font-weight:600; font-size:16px; cursor:pointer;}
+    nav>a:hover{text-decoration:underline;}
+
+    .hamburger{display:none; flex-direction:column; cursor:pointer; gap:5px;}
+    .hamburger span{width:25px; height:3px; background:#2c5f7f; transition:.3s;}
+
+    @media (max-width:768px){
+      nav{position:fixed; top:0; right:-100%; height:100vh; width:70%; background:#fff; flex-direction:column; padding:80px 30px; box-shadow:-2px 0 5px rgba(0,0,0,.1); transition:right .3s; z-index:999; gap:30px; align-items:flex-start;}
+      nav.active{right:0;}
+      .hamburger{display:flex; z-index:1000;}
+      .dropdown-content{position:static; display:none; box-shadow:none; padding-left:20px;}
+      .dropdown.active .dropdown-content{display:block;}
+    }
+
+    .dropdown{position:relative; display:inline-block;}
+    .dropdown>a{color:#2c5f7f; text-decoration:none; font-weight:600; font-size:16px; cursor:pointer;}
+    .dropdown-content{display:none; position:absolute; background:#b8c4c0; min-width:200px; box-shadow:0 8px 16px rgba(0,0,0,.2); z-index:1; top:100%; left:0;}
+    .dropdown-content a{color:#2c5f7f; padding:12px 16px; text-decoration:none; display:block; font-size:14px; font-weight:600;}
+    .dropdown-content a:hover{background:#a0aea9;}
+    .dropdown:hover .dropdown-content{display:block;}
+
+    .hero{background:linear-gradient(rgba(44,95,127,.7), rgba(44,95,127,.7)), url('images/Hero.png'); background-size:cover; background-position:center; color:#fff; text-align:center; padding:120px 50px;}
+    .hero-sub-plans{background:linear-gradient(rgba(44,95,127,.7), rgba(44,95,127,.7)), url('images/sup-plan.jpg'); background-size:cover; background-position:center;}
+    .hero-additional-benefits{background:linear-gradient(rgba(44,95,127,.7), rgba(44,95,127,.7)), url('images/add-bens.jpg'); background-size:cover; background-position:center;}
+
+    .hero h1{font-size:42px; font-weight:bold; margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;}
+    .hero p{font-size:16px; margin-bottom:30px; text-transform:uppercase; letter-spacing:.5px;}
+    .hero-small{padding:60px 50px;} .hero-small h1{font-size:36px;}
+
+    .btn{background:#b8c4c0; color:#2c5f7f; padding:12px 30px; text-decoration:none; font-weight:bold; display:inline-block; text-transform:uppercase; font-size:14px; border:none; cursor:pointer; font-family:'Montserrat',sans-serif;}
+    .btn:hover{background:#a0aea9;}
+    .btn-dark{background:#2c5f7f; color:#fff;}
+
+    .content-section{max-width:900px; margin:80px auto; text-align:center; padding:0 30px;}
+    .content-section h2{color:#2c5f7f; font-size:32px; margin-bottom:20px; font-weight:bold;}
+    .content-section h3{color:#333; font-size:18px; margin-bottom:30px; font-weight:600;}
+    .content-section p{color:#333; font-size:15px; line-height:1.8; margin-bottom:15px;}
+
+    .services-section{background:#f5f5f5; padding:80px 50px;}
+    .services-section h2{text-align:center; color:#2c5f7f; font-size:32px; margin-bottom:15px; font-weight:bold;}
+    .services-section>p{text-align:center; color:#2c5f7f; font-size:20px; margin-bottom:60px;}
+    .services-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px; max-width:1200px; margin:0 auto; align-items:center;}
+    .service-image{width:100%; height:300px; background:#d0d0d0; display:flex; align-items:center; justify-content:center; color:#666; font-size:14px;}
+    .service-content h3{color:#2c5f7f; font-size:20px; margin-bottom:20px; font-weight:bold;}
+    .service-content p{color:#333; font-size:15px; line-height:1.8; margin-bottom:15px;}
+    .service-content a{color:#2c5f7f; text-decoration:underline; font-weight:600; text-transform:uppercase; font-size:14px; cursor:pointer;}
+
+    .contact-section{background:#2c5f7f; color:#fff; padding:80px 50px;}
+    .contact-container{max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;}
+    .contact-info h2{font-size:36px; margin-bottom:40px;}
+    .contact-form{display:flex; flex-direction:column; gap:15px;}
+    .contact-form input,.contact-form textarea{padding:12px; border:none; background:rgba(255,255,255,.2); color:#fff; font-size:14px; font-family:'Montserrat',sans-serif;}
+    .contact-form input::placeholder,.contact-form textarea::placeholder{color:rgba(255,255,255,.7);}
+    .contact-form textarea{height:120px; resize:vertical;}
+    .contact-form button{background:#b8c4c0; color:#2c5f7f; padding:12px 30px; border:none; cursor:pointer; font-weight:bold; text-transform:uppercase; align-self:flex-start; font-family:'Montserrat',sans-serif;}
+
+    footer{background:#1a3a4f; color:#fff; text-align:center; padding:30px 50px; font-size:12px; line-height:1.8;}
+
+    .team-section{padding:80px 50px; background:#b8c4c0;}
+    .team-section h2{text-align:center; color:#2c5f7f; font-size:32px; margin-bottom:20px; font-weight:bold;}
+    .team-section>p{text-align:center; color:#2c5f7f; font-size:16px; margin-bottom:60px; max-width:800px; margin-left:auto; margin-right:auto;}
+    .team-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px; max-width:1200px; margin:0 auto;}
+    .team-member{background:#b8c4c0; text-align:center; padding:30px 20px;}
+    .team-member h3{color:#2c5f7f; font-size:18px; margin-bottom:15px;}
+    .team-member p{font-size:13px; line-height:1.6; color:#333;}
+
+    .info-section{padding:80px 50px; max-width:1000px; margin:0 auto;}
+    .info-section.bg-light{background:#F3F7FC; max-width:100%;}
+    .info-section h2{text-align:center; color:#2c5f7f; font-size:32px; margin-bottom:20px; font-weight:bold;}
+    .info-section h3{text-align:center; color:#2c5f7f; font-size:20px; margin-bottom:30px; font-weight:600;}
+    .info-section p{font-size:15px; line-height:1.8; margin-bottom:20px; text-align:center;}
+    .info-section ul{margin:20px 0; padding-left:40px;}
+    .info-section li{margin-bottom:10px; font-size:15px;}
+
+    .info-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px; margin:60px 0; align-items:center;}
+    .info-image{width:100%; height:300px; background:#d0d0d0; display:flex; align-items:center; justify-content:center;}
+
+    .auth-page{min-height:60vh; display:flex; align-items:center; justify-content:center; padding:100px 50px; background:#f9f9f9;}
+    .auth-container{max-width:600px; padding:40px; text-align:center;}
+    .auth-container h1{color:#666; font-size:22px; margin-bottom:35px; font-weight:400;}
+    .auth-container p{color:#666; font-size:14px; margin-bottom:35px; line-height:1.7;}
+    .auth-form{display:flex; flex-direction:column; gap:20px; margin-top:30px;}
+    .form-group{display:flex; align-items:center; justify-content:flex-end; gap:15px;}
+    .form-group label{min-width:120px; text-align:right; color:#333; font-size:15px;}
+    .form-group input{flex:1; max-width:300px; padding:8px 12px; border:1px solid #2c5f7f; font-size:14px; font-family:'Montserrat',sans-serif;}
+    .auth-form button{margin:20px auto 0; padding:8px 30px; background:#fff; border:1px solid #666; color:#333; cursor:pointer; font-size:14px; font-family:'Montserrat',sans-serif;}
+    .auth-form button:hover{background:#f5f5f5;}
+    .auth-links{margin-top:30px; display:flex; flex-direction:column; gap:10px;}
+    .auth-links a{color:#7db842; text-decoration:none; cursor:pointer; font-size:15px;}
+    .auth-links a:hover{text-decoration:underline;}
+
+    @media (max-width:768px){
+      header{padding:15px 20px;}
+      .logo-section{gap:10px;}
+      .logo{width:50px; height:50px;}
+      .company-name{font-size:20px;}
+      .hero{padding:60px 20px;}
+      .hero h1{font-size:24px;}
+      .hero p{font-size:14px;}
+      .hero-small{padding:40px 20px;} .hero-small h1{font-size:28px;}
+      .content-section,.info-section{padding:40px 20px; margin:40px auto;}
+      .services-section{padding:40px 20px;}
+      .services-grid,.contact-container,.team-grid,.info-grid{grid-template-columns:1fr; gap:30px;}
+      .contact-section{padding:40px 20px;}
+      footer{padding:20px;}
+      .auth-page{padding:40px 20px;}
+      .auth-container{padding:20px;}
+      .form-group{flex-direction:column; align-items:stretch;}
+      .form-group label{text-align:left; min-width:auto;}
+      .form-group input{max-width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <label for="tb-user">User Name</label>
+    <input id="tb-user" type="text" />
+    <label for="tb-pass">Password</label>
+    <input id="tb-pass" type="password" />
+    <button onclick="showPage('login')">SIGN IN</button>
+    <a onclick="showPage('register')">Register Account</a>
+    <a onclick="showPage('reset-password')">Reset Password</a>
+  </div>
+
+  <header>
+    <div class="logo-section" onclick="showPage('home')" aria-label="Go to home">
+      <div class="logo">
+        <img src="images/SCA-Logo.png" alt="SCA, Inc. logo">
+      </div>
+      <div class="company-name">SCA, INC</div>
+    </div>
+    <div class="hamburger" onclick="toggleMenu()" role="button" aria-label="Open menu" tabindex="0">
+      <span></span><span></span><span></span>
+    </div>
+    <nav id="mainNav" aria-label="Primary">
+      <a onclick="showPage('about'); closeMenu();">ABOUT</a>
+      <div class="dropdown" onclick="toggleDropdown(event)">
+        <a>OUR SERVICES</a>
+        <div class="dropdown-content">
+          <a onclick="showPage('sub-plans'); closeMenu();">SUB PLANS</a>
+          <a onclick="showPage('additional-benefits'); closeMenu();">ADDITIONAL BENEFITS</a>
+        </div>
+      </div>
+      <a onclick="showPage('contact'); closeMenu();">CONTACT US</a>
+    </nav>
+  </header>
+
+  <div id="home" class="page active">
+    <section class="hero">
+      <h1>A Third Party Administrator for Prevailing<br>Wage Benefit Plans</h1>
+      <p>Supplemental Unemployment Plans that support your workforce and your bottom line</p>
+      <button class="btn" onclick="showPage('contact')">Contact Us</button>
+    </section>
+
+    <section class="content-section">
+      <h2>SERVICE CONTRACT ADMINISTRATORS, INC.</h2>
+      <h3>20+ YEARS OF SERVICE, BACKED BY PEOPLE WHO CARE.</h3>
+      <p>For over 20 years, Service Contract Administrators, Inc. has supported prevailing wage employers and associations with trusted Third Party Administration services. From our headquarters in Columbus, Ohio, we serve hundreds of employers and thousands of employees nationwide—offering expert plan administration, responsive support, and one of the largest Supplemental Unemployment Benefit Plans in the country.</p>
+      <p>We believe in real service from real people. No call centers. No robots. Just experienced professionals who pick up the phone and know how to help.</p>
+      <button class="btn" onclick="showPage('about')">Learn About Us</button>
+    </section>
+
+    <section class="services-section">
+      <h2>TAKE THE STRESS OUT OF BENEFITS</h2>
+      <p>WITH SCA, INC. BY YOUR SIDE</p>
+      <div class="services-grid">
+        <img src="images/sup-plan.jpg" alt="Construction workers" class="service-image" style="object-fit:cover;">
+        <div class="service-content">
+          <h3>PWCA SUPPLEMENTAL UNEMPLOYMENT BENEFIT PLAN</h3>
+          <p>The PWCA Supplemental Unemployment Benefit Plan, or SUB Plan, uses fringe benefit dollars to provide income replacement for employees who have involuntary work stoppages.</p>
+          <p>Employers that provide the PWCA SUB Plan to their employees eliminate the additional payroll tax burden of paying fringe dollars in cash.</p>
+          <a onclick="showPage('sub-plans')">LEARN MORE</a>
+        </div>
+        <div class="service-content">
+          <h3>ADDITIONAL FRINGE BENEFITS</h3>
+          <p>Through our nationwide network of Brokers, Agencies, and Plan Providers, SCA, Inc. can help you find the right Health Insurance, Retirement Plan, Hour Banking Program or other fringe benefit plan that meets your specific needs.</p>
+          <a onclick="showPage('additional-benefits')">LEARN MORE</a>
+        </div>
+        <img src="images/add-bens.jpg" alt="Office consultation" class="service-image" style="object-fit:cover;">
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="contact-container">
+        <div class="contact-info">
+          <h2>Contact us</h2>
+          <div><strong>PO BOX 14945</strong><br>COLUMBUS, OH 43214</div>
+          <div style="margin-top:20px;"><strong>+1 800 558 5862</strong></div>
+        </div>
+        <form class="contact-form">
+          <input type="text" placeholder="Name" aria-label="Name">
+          <input type="email" placeholder="Email" aria-label="Email">
+          <textarea placeholder="Message" aria-label="Message"></textarea>
+          <button type="submit">SUBMIT</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <p>Service Contract Administrators, Inc. (SCA) complies with applicable Federal civil rights laws and does not discriminate on the basis of race, color, national origin, age, disability, or sex.</p>
+    </footer>
+  </div>
+
+  <div id="about" class="page">
+    <section class="info-section">
+      <h2>SERVICE CONTRACT ADMINISTRATORS, INC.</h2>
+      <h3>WHAT WE DO</h3>
+      <p>SCA, Inc. helps Prevailing Wage employers increase their competitiveness, grow their businesses and win more jobs. We provide top-notch customer service to employee participants and employers alike. SCA, Inc. administers one of the largest association sponsored Supplemental Unemployment Benefit Plans in the country, the PWCA SUB Plan, which provides valuable income replacement for employees experiencing involuntary work stoppages.</p>
+      <div style="text-align:center; margin-top:30px;">
+        <button class="btn" onclick="showPage('home')">OUR SERVICES</button>
+      </div>
+    </section>
+
+    <section class="team-section">
+      <h2>MEET THE TEAM AT SCA, INC.</h2>
+      <p>At SCA, we believe that talking to a real person who understands your situation is key.</p>
+      <div class="team-grid">
+        <div class="team-member">
+          <h3>Jeremiah Renner, President</h3>
+          <p>Jeremiah has been with Service Contract Administrators since 2010. Prior to joining SCA, he specialized in building, servicing and marketing employee benefit plans at some of the largest benefit plan providers in the country, including Principal Financial Group, Voya (formerly ING), and the Ohio Public Employees Retirement System. Jeremiah is a graduate of The Ohio State University's Fisher College of Business. He lives in Upper Arlington, Ohio with his wife and twins.</p>
+        </div>
+        <div class="team-member">
+          <h3>Brad Arnold, Vice President</h3>
+          <p>Brad is a graduate of The Ohio State University with a degree in Personal Finance. He joined SCA in 2012 and was promoted to Vice President in 2014. His management experience includes work in multiple industries, as well as his time as a sergeant in the US Army. Brad is also responsible for the online experience for SCA clients, employees and brokers. He lives with his wife and two daughters in Westerville, Ohio.</p>
+        </div>
+        <div class="team-member">
+          <h3>Ryan West, Account Executive</h3>
+          <p>Prior to joining Service Contract Administrators in 2016, Ryan worked with several Fortune 500 companies, as well as the University of California System. His management experience focuses on merchant services, customer experience, human resources, and project management. Ryan graduated from The Ohio State University's Fisher College of Business in Worthington, Ohio with his wife and two daughters.</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:60px;">
+        <button class="btn-dark btn" onclick="showPage('contact')">GET IN TOUCH</button>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="contact-container">
+        <div class="contact-info">
+          <h2>Contact us</h2>
+          <div><strong>PO BOX 14945</strong><br>COLUMBUS, OH 43214</div>
+          <div style="margin-top:20px;"><strong>+1 800 558 5862</strong></div>
+        </div>
+        <form class="contact-form">
+          <input type="text" placeholder="Name" aria-label="Name">
+          <input type="email" placeholder="Email" aria-label="Email">
+          <textarea placeholder="Message" aria-label="Message"></textarea>
+          <button type="submit">SUBMIT</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <p>Note: This website is designed for general information only.</p>
+    </footer>
+  </div>
+
+  <div id="sub-plans" class="page">
+    <section class="hero hero-small hero-sub-plans">
+      <h1>PWCA Supplemental Unemployment Benefit Plan</h1>
+      <p>Helping you support your workforce</p>
+    </section>
+
+    <section class="info-section">
+      <h2>WHY CHOOSE THE SUB PLAN?</h2>
+      <h3>PROTECT YOUR EMPLOYEES. IMPROVE YOUR BOTTOM LINE.</h3>
+      <p>The PWCA Supplemental Unemployment Benefit (SUB) Plan allows employers to use fringe benefit dollars to fund tax-free income replacement for employees who experience involuntary job loss between government contracts or seasonal work.</p>
+      <ul style="list-style:disc; padding-left:20px; max-width:650px; margin:0 auto 20px;">
+        <li>Employees receive weekly benefits when out of work through no fault of their own.</li>
+        <li>Employers reduce the need to pay out taxable fringe dollars as cash.</li>
+        <li>You stay compliant with wage determinations under the Service Contract Act.</li>
+      </ul>
+      <div style="text-align:center; margin-top:40px;">
+        <button class="btn-dark btn" onclick="showPage('contact')">GET IN TOUCH</button>
+      </div>
+    </section>
+
+    <section class="info-section bg-light">
+      <h2 style="text-align:left;">HOW IT WORKS</h2>
+      <h3 style="text-align:left;">SIMPLE TO SET UP. EASY TO ADMINISTER.</h3>
+      <div class="info-grid">
+        <div>
+          <p style="text-align:left;">The SUB Plan is a qualified benefit program under IRS guidelines. Contributions are made pre-tax, and employees receive tax-free benefits. SCA, Inc. handles all the administration — from compliance to claims management.</p>
+          <ul style="text-align:left; list-style:disc; padding-left:20px;">
+            <li>Employer allocates fringe dollars to the SUB Plan.</li>
+            <li>SCA, Inc. manages the funds in a secure trust account.</li>
+            <li>Employees who are laid off or between contracts can file a claim.</li>
+            <li>Eligible employees receive weekly benefit payments tax-free.</li>
+          </ul>
+          <button class="btn" onclick="showPage('about')">ABOUT US</button>
+        </div>
+        <div class="info-image" aria-hidden="true">Profile Image</div>
+      </div>
+    </section>
+
+    <section class="services-section">
+      <h2>EMPLOYER BENEFITS</h2>
+      <p>BENEFITS THAT MAKE BUSINESS SENSE</p>
+      <div style="max-width:600px; margin:40px auto; text-align:left;">
+        <ul style="list-style:disc; padding-left:20px;">
+          <li>Avoid the payroll tax hit</li>
+          <li>Retain your workforce</li>
+          <li>Boost employee loyalty</li>
+        </ul>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn-dark btn" onclick="showPage('contact')">GET IN TOUCH</button>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="contact-container">
+        <div class="contact-info">
+          <h2>Contact us</h2>
+          <div><strong>PO BOX 14945</strong><br>COLUMBUS, OH 43214</div>
+          <div style="margin-top:20px;"><strong>+1 800 558 5862</strong></div>
+        </div>
+        <form class="contact-form">
+          <input type="text" placeholder="Name" aria-label="Name">
+          <input type="email" placeholder="Email" aria-label="Email">
+          <textarea placeholder="Message" aria-label="Message"></textarea>
+          <button type="submit">SUBMIT</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <p>Note: This website is designed for general information only.</p>
+    </footer>
+  </div>
+
+  <div id="additional-benefits" class="page">
+    <section class="hero hero-small hero-additional-benefits">
+      <h1>Additional Benefits</h1>
+      <p>Supporting your workforce with health, retirement benefits, and more</p>
+    </section>
+
+    <section class="info-section">
+      <h2>OUR NETWORK</h2>
+      <h3>SOLUTIONS TAILORED TO YOUR SPECIFIC NEEDS</h3>
+      <p>Through our nationwide network of Brokers, Agencies, and Plan Providers, SCA, Inc. helps employers offer affordable, high-quality fringe benefits to their workforce — beyond just Supplemental Unemployment Benefit Plans. We offer a wide range of benefits including:</p>
+      <ul style="margin:30px auto; max-width:500px; text-align:left;">
+        <li>Health Insurance</li>
+        <li>Retirement Plans</li>
+        <li>Hour Banking Programs</li>
+        <li>Other Fringe Benefits</li>
+      </ul>
+      <div style="text-align:center; margin-top:40px;">
+        <button class="btn-dark btn" onclick="showPage('contact')">GET IN TOUCH</button>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="contact-container">
+        <div class="contact-info">
+          <h2>Contact us</h2>
+          <div><strong>PO BOX 14945</strong><br>COLUMBUS, OH 43214</div>
+          <div style="margin-top:20px;"><strong>+1 800 558 5862</strong></div>
+        </div>
+        <form class="contact-form">
+          <input type="text" placeholder="Name" aria-label="Name">
+          <input type="email" placeholder="Email" aria-label="Email">
+          <textarea placeholder="Message" aria-label="Message"></textarea>
+          <button type="submit">SUBMIT</button>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <p>Note: This website is designed for general information only.</p>
+    </footer>
+  </div>
+
+  <div id="contact" class="page">
+    <section class="contact-section" style="padding:120px 50px;">
+      <div class="contact-container">
+        <div class="contact-info">
+          <h2>Contact us</h2>
+          <div><strong>PO BOX 14945</strong><br>COLUMBUS, OH 43214</div>
+          <div style="margin-top:20px;"><strong>+1 800 558 5862</strong></div>
+        </div>
+        <form class="contact-form">
+          <input type="text" placeholder="Name" aria-label="Name">
+          <input type="email" placeholder="Email" aria-label="Email">
+          <textarea placeholder="Message" aria-label="Message"></textarea>
+          <button type="submit">SUBMIT</button>
+        </form>
+      </div>
+    </section>
+    <footer>
+      <p>Service Contract Administrators, Inc. (SCA) complies with applicable Federal civil rights laws.</p>
+    </footer>
+  </div>
+
+  <div id="login" class="page">
+    <section class="auth-page">
+      <div class="auth-container">
+        <h1>Sign in to access your SCA Online Account</h1>
+        <p>Please enter a correct username and password.<br>Note that both fields may be case-sensitive.</p>
+        <form class="auth-form">
+          <div class="form-group">
+            <label for="login-user">Username:</label>
+            <input id="login-user" type="text" required>
+          </div>
+          <div class="form-group">
+            <label for="login-pass">Password:</label>
+            <input id="login-pass" type="password" required>
+          </div>
+          <button type="submit">Sign In</button>
+        </form>
+        <div class="auth-links">
+          <a onclick="showPage('register')">Register for Online Access</a>
+          <a onclick="showPage('reset-password')">Forgot Password</a>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <p>Service Contract Administrators, Inc. (SCA) complies with applicable Federal civil rights laws.</p>
+    </footer>
+  </div>
+
+  <div id="register" class="page">
+    <section class="auth-page">
+      <div class="auth-container">
+        <p>Through our online portal you'll have access to your account information,<br>plan materials, and statements. Please fill out the fields below to get started:</p>
+        <form class="auth-form">
+          <div class="form-group">
+            <label for="reg-last">Last Name:</label>
+            <input id="reg-last" type="text" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-zip">Zip Code:</label>
+            <input id="reg-zip" type="text" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-ssn">Last 4 of SSN:</label>
+            <input id="reg-ssn" type="text" maxlength="4" required>
+          </div>
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </section>
+    <footer>
+      <p>Service Contract Administrators, Inc. (SCA) complies with applicable Federal civil rights laws.</p>
+    </footer>
+  </div>
+
+  <div id="reset-password" class="page">
+    <section class="auth-page">
+      <div class="auth-container">
+        <p>Please enter your email address:</p>
+        <form class="auth-form">
+          <div class="form-group">
+            <input type="email" placeholder="user@email.com" required style="max-width:400px; margin:0 auto;" aria-label="Email">
+          </div>
+          <button type="submit">Email Me a New Password</button>
+        </form>
+      </div>
+    </section>
+    <footer>
+      <p>Service Contract Administrators, Inc. (SCA) complies with applicable Federal civil rights laws.</p>
+    </footer>
+  </div>
+
+  <script>
+    function showPage(pageId){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      const page=document.getElementById(pageId);
+      if(page){ page.classList.add('active'); window.scrollTo(0,0); }
+    }
+
+    function toggleMenu(){
+      const nav=document.getElementById('mainNav');
+      nav.classList.toggle('active');
+    }
+
+    function closeMenu(){
+      document.getElementById('mainNav').classList.remove('active');
+    }
+
+    function toggleDropdown(event){
+      if(window.innerWidth <= 768){
+        event.stopPropagation();
+        event.currentTarget.classList.toggle('active');
+      }
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event){
+      const nav=document.getElementById('mainNav');
+      const hamburger=document.querySelector('.hamburger');
+      if(!nav.contains(event.target) && !hamburger.contains(event.target)){
+        nav.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
